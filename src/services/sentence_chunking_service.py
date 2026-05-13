@@ -1,13 +1,15 @@
 import os
-from llama_index.core.node_parser import SentenceSplitter, SemanticSplitterNodeParser
+from llama_index.core.node_parser import SentenceSplitter
 
 class sentence_chunking_service:
-    MAX_TOKENS = os.getenv("MAX_TOKENS",40)
     def __init__(self):
-        pass
+        self.max_tokens = int(os.getenv("MAX_TOKENS",100))
+        self.overlap_tokens = int(os.getenv("OVERLAP_TOKENS",10))
 
     async def sentence_chunking(self,text):
-        """Sentence-aware chunking: respects sentence boundaries"""
-        splitter = SentenceSplitter(chunk_size=self.MAX_TOKENS, chunk_overlap=10)
-        return splitter.split_text(text)
+        dataset = []
+        splitter = SentenceSplitter(chunk_size=self.max_tokens, chunk_overlap=self.overlap_tokens)
+        for i in text:
+            dataset.append(splitter.split_text(i["description"]))
+        return dataset  
         

@@ -11,7 +11,7 @@ class uploading_service:
         self.encoder = embedding_model().get_embedding()
         self.client = connection_to_cluster()
 
-    async def upload_text(self,text):
+    async def upload_text(self,text,collection_name):
         idx = 0
         for i in text:
             for j in i:
@@ -22,7 +22,7 @@ class uploading_service:
                 ))
                 idx+=1
             
-        self.client.upload_points(collection_name="movies",points=self._points)
+        self.client.upsert(collection_name=collection_name,points=self._points,wait=True)
         return {"status":201,"message":"text uploaded successfully"}
         
         

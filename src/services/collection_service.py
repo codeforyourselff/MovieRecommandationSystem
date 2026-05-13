@@ -6,7 +6,7 @@ class collection_service:
     def __init__(self):
         pass
 
-    async def create_collection(create_collection_model):
+    async def create_collection(self,create_collection_model):
         try:
             connection_service_instance = connection_to_cluster()
             connection_service_instance._client.create_collection(collection_name=create_collection_model.collection_name ,vectors_config={
@@ -18,11 +18,11 @@ class collection_service:
         except Exception as e:
             print(e)
     
-    async def get_collection_info(self,collection_name:str):
+    async def get_all_collections(self):
         try:
             connection_service_instance = connection_to_cluster()
-            result = connection_service_instance._client.get_collection(collection_name)
-            return result
+            result = connection_service_instance._client.get_collections()
+            return result.collections
         except Exception as e:
             print(e)
 

@@ -3,7 +3,9 @@ from src.models.create_collection_model import create_collection_model
 from fastapi import APIRouter, HTTPException, Depends
 from src.services.factory_service import get_collection_service
 from src.services.collection_service import collection_service
+from fastapi.responses import JSONResponse
 import http
+import json
 
 collection_router = APIRouter(prefix="/v1/collection",tags=["collections"],dependencies=[Depends(get_collection_service)])
 
@@ -21,11 +23,12 @@ async def create_collection(payload:create_collection_model,service:collection_s
         print(e)
         raise HTTPException(status_code=http.HTTPStatus.INTERNAL_SERVER_ERROR,detail={"message":"Collection creation failed","data":None})
 
-@collection_router.get("/collection_info/{collection_name}",status_code=http.HTTPStatus.OK)
-async def get_collection_info(collection_name:str,service:collection_service_dependency):
+@collection_router.get("/get_all_collections/",status_code=http.HTTPStatus.OK)
+async def get_all_collections(service:collection_service_dependency):
     try:
-        result = await service.get_collection_info(collection_name)
-        return JSONResponse(status_code=http.HTTPStatus.OK,content={"message":"Collection info retrieved successfully","data":result})
+        result = await service.get_all_collections()
+        result_json = [c.model_dump() for c in result]    
+        return JSONResponse(status_code=http.HTTPStatus.OK,content={"message":"All collections retrieved successfully","data":result_json})
     except HTTPException:
         raise
     except Exception as e:
