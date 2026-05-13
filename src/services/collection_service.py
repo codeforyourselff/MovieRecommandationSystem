@@ -1,0 +1,35 @@
+from src.services.connection_service import connection_to_cluster
+from src.models.create_collection_model import create_collection_model
+from qdrant_client import models
+
+class collection_service:
+    def __init__(self):
+        pass
+
+    async def create_collection(create_collection_model):
+        try:
+            connection_service_instance = connection_to_cluster()
+            connection_service_instance._client.create_collection(collection_name=create_collection_model.collection_name ,vectors_config={
+                "fixed":models.VectorParams(size=384,distance=models.Distance.COSINE),
+                "sentence":models.VectorParams(size=384,distance=models.Distance.COSINE),
+                "semantic":models.VectorParams(size=384,distance=models.Distance.COSINE)
+            })
+            return {"status":201,"message":f"collection {create_collection_model.collection_name} created successfully"}
+        except Exception as e:
+            print(e)
+    
+    async def get_collection_info(self,collection_name:str):
+        try:
+            connection_service_instance = connection_to_cluster()
+            result = connection_service_instance._client.get_collection(collection_name)
+            return result
+        except Exception as e:
+            print(e)
+
+    async def delete_collection(self,collection_name:str):
+        try:
+            connection_service_instance = connection_to_cluster()
+            result = connection_service_instance._client.delete_collection(collection_name)
+            return result
+        except Exception as e:
+            print(e)
