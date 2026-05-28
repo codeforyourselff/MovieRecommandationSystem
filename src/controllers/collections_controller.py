@@ -16,7 +16,7 @@ collection_service_dependency = Annotated[collection_service,Depends(get_collect
 async def create_collection(payload:create_collection_model,service:collection_service_dependency):
     try:
         await service.create_collection(payload)
-        return JSONResponse(status_code=http.HTTPStatus.CREATED,content={"message":"Collection created successfully","data":None})
+        return JSONResponse(status_code=http.HTTPStatus.CREATED,content={"message":"Collection created successfully"})
     except HTTPException:
         raise
     except Exception as e:

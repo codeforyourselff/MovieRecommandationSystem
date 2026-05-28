@@ -1,6 +1,9 @@
 import os
 from qdrant_client import QdrantClient
 from threading import Lock
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class connection_to_cluster:
     _instance = None

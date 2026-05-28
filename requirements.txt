@@ -4,5 +4,5 @@ qdrant_client
 sentence_transformers
 llama_index
 transformers
-textwrap
-http
+fastapi
+uvicorn

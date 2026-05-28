@@ -4,6 +4,7 @@ from src.services.fixed_chunking_service import fixed_chunking_service
 from src.services.sentence_chunking_service import sentence_chunking_service
 from src.services.semantic_service import semantic_chunking_service
 from src.services.uploading_service import uploading_service
+from src.services.search_service import search_service
 
 async def get_collection_service(request:Request) -> collection_service:
     if not hasattr(request.state, "collection_service"):
@@ -29,3 +30,8 @@ async def get_uploading_service(request:Request):
     if not hasattr(request.state, "uploading_service"):
         request.state.uploading_service=uploading_service()
     return request.state.uploading_service
+
+async def get_search_service(request:Request):
+    if not hasattr(request.state, "search_service"):
+        request.state.search_service=search_service()
+    return request.state.search_service

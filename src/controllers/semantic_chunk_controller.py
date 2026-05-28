@@ -6,6 +6,7 @@ from src.services.semantic_service import semantic_chunking_service
 from src.models.chunking_model import chunking_model
 from src.services.factory_service import get_uploading_service
 from src.services.uploading_service import uploading_service
+from fastapi.responses import JSONResponse
 
 semantic_chunking_router = APIRouter(prefix="/v1/chunking",tags=["chunking"],dependencies=[Depends(get_semantic_chunking_service)])
 
@@ -17,7 +18,7 @@ uploading_dependecy = Annotated[uploading_service,Depends(get_uploading_service)
 async def semantic_chunking(payload:chunking_model,service:semantic_chunking_service_dependecy,uploading_service:uploading_dependecy):
     try:
         data = await service.semantic_chunking(payload.text)
-        await uploading_service.upload_text(data,payload.collection_name)
+        await uploading_service.upload_text(data,payload.collection_name,"semantic")
         return JSONResponse(status_code=http.HTTPStatus.CREATED,content={"message":"Data processed successfully","data":data})
     except HTTPException:
         raise

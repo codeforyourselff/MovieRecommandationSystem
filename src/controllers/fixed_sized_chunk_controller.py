@@ -17,14 +17,13 @@ uploading_dependecy = Annotated[uploading_service,Depends(get_uploading_service)
 @fixed_chunking_router.post("/fixed_size_chunks", status_code=http.HTTPStatus.CREATED)
 async def fixed_chunking_size(payload:chunking_model,service:fixed_chunking_service_dependecy,uploading_service:uploading_dependecy):
     try:
-        chunk_ready_to_upload = []
-
-        for each_description in payload.text:
-            if each_description["description"]:
-                description = each_description["description"]
-                chunk_ready_to_upload.append(await service.fixed_size_chunks(description))
-
-        await uploading_service.upload_text(chunk_ready_to_upload)
+        __chunk_data = []
+        for item in payload.text:
+            if item["description"]:
+                __chunk_text = await service.fixed_size_chunks(item)   
+                __chunk_data.extend(__chunk_text)
+        
+        await uploading_service.upload_text(__chunk_data,payload.collection_name,"fixed")
         return JSONResponse(status_code=http.HTTPStatus.CREATED,content={"message":"Data processed successfully","data":None})
     except HTTPException:
         raise
