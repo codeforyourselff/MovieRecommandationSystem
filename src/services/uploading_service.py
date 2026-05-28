@@ -13,9 +13,9 @@ class uploading_service:
         self.batch_size = int(os.getenv("BATCH_SIZE"))
 
     async def upload_text(self,text,collection_name,chunking_type):
-        _points = []
         for i in range(0,len(text),self.batch_size):
             single_chunk = text[i:i+self.batch_size]
+            _points = []
             for item in single_chunk:
                 _points.append(models.PointStruct(
                     id=str(uuid.uuid4()),

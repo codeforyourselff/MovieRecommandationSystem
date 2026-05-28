@@ -9,16 +9,28 @@ class semantic_chunking_service:
         self._buffer_size = os.getenv("BUFFER_SIZE")
         self._breakpoint_percentile_threshold = os.getenv("BREAKPOINT_PERCENTILE_THRESHOLD")
         self._embed_model = os.getenv("EMBED_MODEL")
-
-    async def semantic_chunking(self,text):
-        semantic_splitter = SemanticSplitterNodeParser(
+        self.semantic_splitter = SemanticSplitterNodeParser(
             buffer_size=int(self._buffer_size),
             breakpoint_percentile_threshold=int(self._breakpoint_percentile_threshold),
             embed_model=HuggingFaceEmbedding(model_name=self._embed_model)
         )
 
-        doc_content = [Document(text=item["description"]) for item in text]
+    async def semantic_chunking(self,text):
+        documents = []
+        for item in text:
+            description = item.get("description","")
+            if not description:
+                continue
 
-        nodes = semantic_splitter.get_nodes_from_documents(doc_content)
-        node_content = [node for node in nodes]
-        return node_content
+            document = Document(text=description,metadata={
+                "movie_name": item.get("name"),
+                "author": item.get("author"),
+                "year": item.get("year")
+            })
+            documents.append(document)
+        
+
+        return await self.semantic_splitter.get_nodes_from_documents(documents)
+
+
+    

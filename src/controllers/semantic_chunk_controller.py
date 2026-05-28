@@ -18,6 +18,7 @@ uploading_dependecy = Annotated[uploading_service,Depends(get_uploading_service)
 async def semantic_chunking(payload:chunking_model,service:semantic_chunking_service_dependecy,uploading_service:uploading_dependecy):
     try:
         data = await service.semantic_chunking(payload.text)
+        print(data)
         await uploading_service.upload_text(data,payload.collection_name,"semantic")
         return JSONResponse(status_code=http.HTTPStatus.CREATED,content={"message":"Data processed successfully","data":data})
     except HTTPException:

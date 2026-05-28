@@ -7,9 +7,19 @@ class sentence_chunking_service:
         self.overlap_tokens = int(os.getenv("OVERLAP_TOKENS",10))
 
     async def sentence_chunking(self,text):
-        dataset = []
         splitter = SentenceSplitter(chunk_size=self.max_tokens, chunk_overlap=self.overlap_tokens)
+        dataset = []
+
         for i in text:
-            dataset.append(splitter.split_text(i["description"]))
-        return dataset 
-        
+            description = i.get("description")
+            if not description:
+                continue
+
+            sentences = splitter.split_text(description)
+            for sentence in sentences:
+                dataset.append({
+                    "movie_name": i.get("name"),
+                    "author": i.get("author"),
+                    "year": i.get("year"),
+                    "chunk":sentence})
+        return dataset
