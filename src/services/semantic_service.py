@@ -30,7 +30,5 @@ class semantic_chunking_service:
             documents.append(document)
         
 
-        return await self.semantic_splitter.get_nodes_from_documents(documents)
-
-
+        return self.semantic_splitter.get_nodes_from_documents(documents)
     
